@@ -1,35 +1,43 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { BCA, BNI, Background, Flower1, Man, Scooter, WeddingCouple, Woman } from '../../assets';
-import { Box, Button, Center, Grid, GridItem, HStack, Image, Input, SimpleGrid, Spinner, Stack, Text, Textarea, VStack } from '@chakra-ui/react';
-import { Calendar, Clock, Copy, Envelope, Pause, Play } from '../../assets/icons';
+import { BCA, BNI, Background, Man, Scooter, WeddingCouple, Woman } from '../../assets';
+import { Box, Button,  Grid, GridItem, HStack, Image, Input, SimpleGrid, Spinner, Stack, Text, Textarea, VStack } from '@chakra-ui/react';
+import { Calendar, Clock, Clock2, Copy, Envelope, Map, Pause, Play } from '../../assets/icons';
 import { copyText, useCountdown } from '../../hooks';
 import { Toast } from '../../components';
 import { useFormik } from 'formik'
 import * as Yup from "yup";
 import { Music } from '../../assets/music';
 import { useInView } from 'react-intersection-observer';
-import { fetchMessages } from '../../features/message';
 import { API } from '../../config/api';
 import { useInfiniteQuery, useMutation, useQueryClient } from 'react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { id } from 'date-fns/locale';
+import { Fade, Zoom } from 'react-reveal';
+import Flip from 'react-reveal/Flip';
+import LightSpeed from 'react-reveal/LightSpeed';
+import Wave from 'react-wavify';
 
 const Index = () => {
     const location = useLocation();
-    // console.log('location : ', location.pathname.replace("/", ""));
     const LIMIT = 3;
     const { createToast } = Toast();
     const { ref, inView } = useInView();
-
+    const {days, hours, minutes, seconds} = useCountdown('2023-11-18 08:00:00');
+    const song = useRef(new Audio(Music));
     const queryClient = useQueryClient();
 
     const [step, setStep] = useState(0),
     [isPlaying, setIsplaying] = useState(false),
-    [page, setPage] = useState(1),
-    [loadAction, setLoadAction] = useState(false);
+    [loadAction, setLoadAction] = useState(false),
+    [guestName, setGuestName] = useState('Nama Tamu Undangan');
 
-    const song = useRef(new Audio(Music));
+    useEffect(() => {
+      const name = location.pathname.replace("/", "")
+      if(name){
+        setGuestName(name);
+      }
+    }, []);
 
     const toggleAudio = () => {
       if(isPlaying){
@@ -42,7 +50,6 @@ const Index = () => {
       }
     }
 
-    const {days, hours, minutes, seconds} = useCountdown('2023-11-18 08:00:00');
 
     const {
       status,
@@ -52,7 +59,6 @@ const Index = () => {
       isFetchingNextPage,
       fetchNextPage,
       hasNextPage,
-      refetch,
     } = useInfiniteQuery(
       "list-messages",
       async ({ pageParam = 1 }) => {
@@ -60,12 +66,10 @@ const Index = () => {
           `/wedding-messages?page=${pageParam}&limit=${LIMIT}`
         );
   
-        console.log("messages : ", res.data);
         return res.data;
       },
       {
         getNextPageParam: (lastPage) => {
-          console.log('lastpage : ', lastPage)
           if (
             Number(lastPage.metadata.current_page) < Number(lastPage.metadata.total_pages)
           ) {
@@ -81,15 +85,12 @@ const Index = () => {
       }
     }, [inView]);
 
-    console.log('data msg : ', data)
-
     const {
       handleSubmit,
       setFieldValue,
       errors,
       values,
       touched,
-      isValid,
       resetForm,
   } = useFormik({
       initialValues: {
@@ -107,7 +108,13 @@ const Index = () => {
   });
 
   const apiCreateMessage = async (data) => {
-    const res = await API.post("/create-message", data);
+    const res = await API.post("/create-message", data, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json;charset=UTF-8',
+        "Access-Control-Allow-Origin": "*",
+      }
+    });
     return res;
   };
 
@@ -118,7 +125,6 @@ const Index = () => {
       setLoadAction(true);
     },
     onError: (error, variables, context) => {
-      console.log('error : ', error);
       setLoadAction(false);
       createToast('Pesan gagal dikirim', "error", "", "bottom-right");
     },
@@ -126,10 +132,9 @@ const Index = () => {
       setLoadAction(false);
     },
     onSuccess: (success) => {
-      console.log('success : ', success);
       queryClient.refetchQueries({ queryKey: ["list-messages"]});
       setLoadAction(false);
-      if(success.data.status.toLowerCase() == 'success'){
+      if(success.data.status.toLowerCase() === 'success'){
         createToast('Pesan berhasil dikirim', "success", "", "bottom-right");
         resetForm();
       }else{
@@ -145,65 +150,64 @@ const Index = () => {
   return (
     <Box
         style={{
-            // backgroundImage: `url(${Background})`,
-            // backgroundPosition: 'center',
-            // backgroundSize: 'cover',
-            // backgroundRepeat: 'no-repeat',
-            background: 'black',
+            backgroundImage: `url(${Background})`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
             width: '100vw',
             height: 'auto'
         }}
-        color={'white'}
+        color={'#8a613a'}
     >
-      {step == 0 ? (
-          <HStack justify={'center'}  width={['95%']} mx={'auto'} pt={{sm: 4, lg: 0 }} pb={{ sm: 8, lg: 0 }}>
-            <VStack justify={'center'} width={'full'} height={['100vh', 'auto', '100vh']}>
-              {/* <Text fontWeight={'bold'} fontSize={'4xl'} mb={4} textAlign={'center'}>بِسْــــــــــــــــــمِ اللهِ الرَّحْمَنِ الرَّحِيْمِ</Text> */}
-              {/* <Text fontWeight={'bold'} fontSize={'6xl'} mb={4} textAlign={'center'} className='font-great' casing={'capitalize'}>Assalamu’alaikum Warahmatullahi Wabarakatuh</Text> */}
-              <Text fontWeight={'bold'} fontSize={['4xl', '6xl']} mt={4} textAlign={'center'} className='font-great' casing={'capitalize'}>Undangan Pernikahan</Text>
+      {step === 0 ? (          
+          <HStack justify={'center'}  width={['95%']} height={'100vh'} mx={'auto'} pt={{sm: 4, lg: 0 }} pb={{ sm: 8, lg: 0 }}>
+            <VStack justify={'center'} width={'full'} height={['auto', 'auto', '100vh']} zIndex={5}>
+              <Text fontWeight={'bold'} fontSize={['4xl', '4xl', '5xl']} mt={4} textAlign={'center'} className='font-great' casing={'capitalize'}>Undangan Pernikahan</Text>
               <HStack justify={'center'}>
-                <Box position={'relative'} display={'block'} width={['75%', '50%']}>
+                <Box position={'relative'} display={'block'} width={['90%', '55%', '35%', '35%', '45%']}>
                   <Image src={WeddingCouple} width={'100%'} objectFit={'cover'} />
                 </Box>
               </HStack>
               <Stack
                 gap={6}
                 direction={{lg: 'row'}}
+                fontSize={['4xl', '5xl']} 
               >
+                <Fade left>
+                  <Text 
+                    mt={4}
+                    fontWeight={'bold'}
+                    textAlign={'center'}
+                    className='font-great'
+                  >
+                    Luthfi
+                  </Text>
+                </Fade>
                 <Text 
                   mt={4}
-                  fontSize={['4xl', '6xl']} 
-                  fontWeight={'bold'}
-                  textAlign={'center'}
-                  className='font-great'
-                >
-                  Luthfi
-                </Text>
-                <Text 
-                  mt={4}
-                  fontSize={['4xl', '6xl']} 
                   fontWeight={'bold'}
                   textAlign={'center'}
                   className='font-great'
                 >
                   &
                 </Text>
-                <Text 
-                  mt={4}
-                  fontSize={['4xl', '6xl']} 
-                  fontWeight={'bold'}
-                  textAlign={'center'}
-                  className='font-great'
-                >
-                  Endang
-                </Text>
+                <Fade right>
+                  <Text 
+                    mt={4}
+                    fontWeight={'bold'}
+                    textAlign={'center'}
+                    className='font-great'
+                  >
+                    Endang
+                  </Text>
+                </Fade>
               </Stack>
-              <Text fontSize={['md', 'md']} fontWeight={'semibold'} mt={4}>Kpd Bpk/Ibu/Saudara/i</Text>
-              <Text fontSize={['xl', '2xl']} fontWeight={'bold'} my={2}>Nama Tamu Undangan</Text>
+              <Text fontSize={['md', 'md']} fontWeight={'semibold'} mt={4} textAlign={'center'}>Kpd Bpk/Ibu/Saudara/i</Text>
+              <Text fontSize={['2xl', '2xl']} fontWeight={'bold'} my={2} casing={'capitalize'} textAlign={'center'}>{guestName.split("%20").join(" ")}</Text>
               <Text 
                 mt={2} 
                 fontWeight={'semibold'} 
-                fontSize={['xs', 'lg']}
+                fontSize={['md', 'lg']}
                 width={['95%', '95%', '50%']} 
                 textAlign={'center'}
               >
@@ -213,6 +217,8 @@ const Index = () => {
                 mt={[4, 4]}
                 color={'white'}
                 background={'#e37811'}
+                className='zoom-in-out-btn'
+                size={['sm']}
                 _hover={{ background: '#a55a13' }}
                 onClick={() => {
                   setStep(1)
@@ -220,14 +226,16 @@ const Index = () => {
                 }}
               >
                 <Image src={Envelope} /> 
-                <Text ml={2}>Buka Undangan</Text>
+                <Text ml={2} fontWeight={'bold'}>Buka Undangan</Text>
               </Button>
             </VStack>
           </HStack>
       ): (
-        <Box>
+        <Box
+          background={'##FFFFFFB8'}
+        >
           <Box
-            p={2}
+            p={1}
             right={0}
             top={'50%'}
             bg={'#e37811'}
@@ -247,66 +255,78 @@ const Index = () => {
               <source src={Music} type="audio/mp3"></source>
             </audio>
           </Box>
+
           <Box
             style={{
-              // backgroundImage: `url(${Background})`,
-              // backgroundPosition: 'center',
-              // backgroundSize: 'cover',
-              // backgroundRepeat: 'no-repeat',
-              background: 'black',
+              backgroundImage: `url(${Background})`,
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
               width: '100vw',
-              height: '100vh'
+              height: 'auto'
             }}
           >
             {/* section 1 */}
-            <VStack height={['100vh', 'auto']} justify={'center'} width={'95%'} mx={'auto'} pt={{sm: 4, lg: 0 }} pb={{ sm: 8, lg: 0 }}>
+            <VStack height={['auto']} justify={'center'} width={'full'} m={'auto'} pt={[10]} pb={{ sm: 8, lg: 0 }}>
               <Text 
-                color={'white'} 
                 fontWeight={'bold'} 
                 textAlign={'center'}
-                fontSize={['xl', '2xl', '5xl']} 
+                fontSize={['3xl', '4xl', '5xl']}
               >
                 Save the date
               </Text>
               <Text 
                 mb={4}
-                color={'white'} 
                 fontWeight={'bold'} 
                 textAlign={'center'}
                 fontSize={['xl', '2xl',  '3xl']} 
               >
                 Wedding Invitation
               </Text>
-              <Box position={'relative'} display={'block'} width={['90%', '55%', '20%', '35%']}>
+              <Box position={'relative'} display={'block'} width={['90%', '55%', '35%', '30%', '22%']}>
                 <Image src={WeddingCouple} width={'100%'} objectFit={'cover'} />
               </Box>
-              <Stack gap={{sm: 4, lg: 6}} textAlign={'center'} direction={{sm: 'col', lg: 'row'}} align={'center'}>
-                <Text fontSize={['4xl', '5xl', '6xl']} fontWeight={'bold'} className='font-great'>Luthfi</Text>
+              <Stack gap={[4]} textAlign={'center'} direction={{sm: 'col', lg: 'row'}} align={'center'}>
+                <Fade left>
+                  <Text fontSize={['4xl', '5xl', '6xl']} fontWeight={'bold'} className='font-great'>Luthfi</Text>
+                </Fade>
                 <Text fontSize={['3xl', '4xl', '5xl']} fontWeight={'bold'} className='font-great'>&</Text>
-                <Text fontSize={['4xl', '5xl', '6xl']} fontWeight={'bold'} className='font-great'>Endang</Text>
+                <Fade right>
+                  <Text fontSize={['4xl', '5xl', '6xl']} fontWeight={'bold'} className='font-great'>Endang</Text>
+                </Fade>
               </Stack>
-              <Box textAlign={'center'} fontWeight={'bold'} mt={4}>
-                <Text fontSize={['md', 'xl']} p={0} m={0}>Sabtu</Text>
-                <Text fontSize={['lg', 'xl']} p={0} m={0}>18 November 2023</Text>
+              <Box textAlign={'center'} fontWeight={'bold'} mt={[4, 0]}>
+                <Text fontSize={['2xl', 'xl', '2xl', '2xl']} p={0} m={0} mb={2}>Sabtu</Text>
+                <SimpleGrid columns={3} gap={2}>
+                  <Box textAlign={'end'}>
+                    <Text fontSize={['xl', 'xl']} p={0} m={0}>18</Text>
+                  </Box>
+                  <Box borderX={'2px'} borderColor={'#c87e10'} textAlign={'center'}>
+                    <Text fontSize={['xl', 'xl']} p={0} m={0}>11</Text>
+                  </Box>
+                  <Box textAlign={'center'}>
+                    <Text fontSize={['xl', 'xl']} p={0} m={0}>2023</Text>
+                  </Box>
+                </SimpleGrid>
               </Box>
 
               <HStack width={['90%', '75%', '50%']} mt={5}>
                 <SimpleGrid columns={[4, 4]} spacing={2} width={'100%'}>
                   <Box bg={'#d99452'} width={'full'} textAlign={'center'} color={'white'} borderRadius={'lg'} p={2}>
-                    <Text fontSize={['lg', 'xl']} fontWeight={'bold'}>{days}</Text>
-                    <Text fontSize={['xs', 'xl']} fontWeight={'semibold'}>Hari</Text>
+                    <Text fontSize={['xl', 'xl']} fontWeight={'bold'}>{days}</Text>
+                    <Text fontSize={['md', 'xl']} fontWeight={'semibold'}>Hari</Text>
                   </Box>
                   <Box bg={'#d99452'} width={'full'} textAlign={'center'} color={'white'} borderRadius={'lg'} p={2}>
-                    <Text fontSize={['lg', 'xl']} fontWeight={'bold'}>{hours}</Text>
-                    <Text fontSize={['sm', 'xl']} fontWeight={'semibold'}>Jam</Text>
+                    <Text fontSize={['xl', 'xl']} fontWeight={'bold'}>{hours}</Text>
+                    <Text fontSize={['md', 'xl']} fontWeight={'semibold'}>Jam</Text>
                   </Box>
                   <Box bg={'#d99452'} width={'full'} textAlign={'center'} color={'white'} borderRadius={'lg'} p={2}>
-                    <Text fontSize={['lg', 'xl']} fontWeight={'bold'}>{minutes}</Text>
-                    <Text fontSize={['sm', 'xl']} fontWeight={'semibold'}>Menit</Text>
+                    <Text fontSize={['xl', 'xl']} fontWeight={'bold'}>{minutes}</Text>
+                    <Text fontSize={['md', 'xl']} fontWeight={'semibold'}>Menit</Text>
                   </Box>
                   <Box bg={'#d99452'} width={'full'} textAlign={'center'} color={'white'} borderRadius={'lg'} p={2}>
-                    <Text fontSize={['lg', 'xl']} fontWeight={'bold'}>{seconds}</Text>
-                    <Text fontSize={['sm', 'xl']} fontWeight={'semibold'}>Detik</Text>
+                    <Text fontSize={['xl', 'xl']} fontWeight={'bold'}>{seconds}</Text>
+                    <Text fontSize={['md', 'xl']} fontWeight={'semibold'}>Detik</Text>
                   </Box>
                 </SimpleGrid>
               </HStack>
@@ -321,37 +341,53 @@ const Index = () => {
                   window.open("https://calendar.google.com/calendar/event?action=TEMPLATE&tmeid=MGI3NWMwcTZjbzZudGs5NmhrbzUwYWdvZ2sgc3VnYXJhbHV0aGZpQG0&tmsrc=sugaraluthfi%40gmail.com");
                 }}
               >
-                <Image src={Clock} /> 
+                <Image src={Clock2} /> 
                 <Text ml={2}>Ingatkan Saya</Text>
               </Button>
             </VStack>
+            <Box height={10}>
+              <Wave mask="url(#mask)" fill="#d99452">
+                <defs>
+                  <linearGradient id="gradient" gradientTransform="rotate(90)">
+                    <stop offset="0" stopColor="white" />
+                    <stop offset="0.5" stopColor="black" />
+                  </linearGradient>
+                  <mask id="mask">
+                    <rect x="0" y="0" width="100%" height="75%" fill="url(#gradient)"  />
+                  </mask>
+                </defs>
+              </Wave>
+            </Box>
           </Box>
 
           {/* section 2 */}
           <Box
             style={{
-              // backgroundImage: `url(${Background})`,
-              // backgroundPosition: 'center',
-              // backgroundSize: 'cover',
-              // backgroundRepeat: 'no-repeat',
-              background: 'black',
+              backgroundImage: `url(${Background})`,
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
               width: '100vw',
-              // height: '100vh'
             }}
             height={['auto']}
           >
             <HStack justify={'center'} px={[2]} pt={[12]} pb={8}>
-              <VStack height={['auto', 'auto', '100vh']} width={'97%'} justify={'center'} align={'center'}>
-                <Text fontWeight={'bold'} fontSize={['2xl', '4xl']} mb={4} textAlign={'center'}>بِسْــــــــــــــــــمِ اللهِ الرَّحْمَنِ الرَّحِيْمِ</Text>
-                <Text
-                  mb={8}
-                  fontSize={['md', 'xl', 'xl', '2xl']}
-                  fontWeight={'bold'}
-                  textAlign={'center'}
-                  width={['98%', '95%', '75%', '50%']}
-                >
-                  Dengan Memohon Rahmat Dan Ridho Dari Allah SWT. Kami Bermaksud Menyelenggarakan Syukuran Pernikahan Putra Putri Kami
-                </Text>
+              <VStack height={['auto', 'auto',]} width={'97%'} justify={'center'} align={'center'}>
+                <Zoom>
+                  <Text fontWeight={'bold'} fontSize={['xl', '2xl', '3xl']} mb={4} textAlign={'center'}>بِسْــــــــــــــــــمِ اللهِ الرَّحْمَنِ الرَّحِيْمِ</Text>
+                </Zoom>
+                <Zoom>
+                  <Text
+                    mb={8}
+                    fontSize={['md', 'xl', 'xl', '2xl']}
+                    fontWeight={'bold'}
+                    textAlign={'center'}
+                    width={['98%', '95%', '75%', '55%']}
+                    mx={'auto'}
+                  >
+                    Dengan memohon Rahmat dan Ridho dari Allah SWT. Kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara pernikahan kami.
+                  </Text>
+                </Zoom>
                 <HStack justify={'center'}>
                 <Grid 
                   templateRows={['repeat(1, 1fr)', 'repeat(1, 1fr)']}
@@ -366,14 +402,20 @@ const Index = () => {
                           <Image src={Man} objectFit={'cover'} width={'100%'} />
                         </Box>
                       </HStack>
-                      <Text fontSize={['2xl', '4xl']} fontWeight={'bold'} className='font-great'>Muhammad Luthfi Sugara Nasution. S.Kom</Text>
-                      <Text fontSize={['sm', 'lg']} fontWeight={'bold'} mt={4}>Anak Dari : </Text>
-                      <Text fontSize={['md', 'xl']} fontWeight={'bold'}>Bapak Zulhelmi Nasution & Ibu Derhinun Harahap</Text>
+                      <Fade bottom>
+                        <Text fontSize={['xl', '2xl', '3xl', '4xl']} fontWeight={'bold'} className='font-great'>Muhammad Luthfi Sugara NST. S.Kom</Text>
+                        <Text fontSize={['md', 'lg']} fontWeight={'bold'} mt={4}>Anak Dari : </Text>
+                        <Stack direction={['column']}>
+                          <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'}>Bapak H. Zul elmi Nasution</Text>
+                          <Text fontSize={['xl', 'xl']} fontWeight={'bold'}>&</Text>
+                          <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'}>Ibu Hj. Derhinun Harahap S.Pd.I</Text>
+                        </Stack>
+                      </Fade>
                     </Box>
                   </GridItem>
                   <GridItem w='100%' colSpan={[11, 11, 1]} align={'center'}>
                     <VStack justify={'center'} height={['', 'full']}>
-                      <Text fontSize={'4xl'} fontWeight={'bold'} className='font-great'>L & E</Text>
+                      <Text fontSize={'4xl'} fontWeight={'bold'} className='font-great'>&</Text>
                     </VStack>
                   </GridItem>
                   <GridItem w='100%' colSpan={[11, 11, 5]} align={'center'}>
@@ -383,34 +425,54 @@ const Index = () => {
                           <Image src={Woman} objectFit={'cover'} width={'100%'} />
                         </Box>
                       </HStack>
-                      <Text fontSize={['2xl', '4xl']} fontWeight={'bold'} className='font-great'>Endang Syuarda. AMD</Text>
-                      <Text fontSize={['sm', 'lg']} fontWeight={'bold'} mt={4}>Anak Dari : </Text>
-                      <Text fontSize={['md', 'xl']} fontWeight={'bold'}>Bapak Purn TNI AD Enjan (Alm) & Ibu Katimah</Text>
+                      <Fade bottom>
+                        <Text fontSize={['xl', '2xl', '3xl', '4xl']} fontWeight={'bold'} className='font-great'>Endang Syuarda. A.Md</Text>
+                        <Text fontSize={['md', 'lg']} fontWeight={'bold'} mt={4}>Anak Dari : </Text>
+                        <Stack direction={['column']}>
+                          <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'}>Bapak Purn TNI AD Enjam (Alm)</Text>
+                          <Text fontSize={['xl', 'xl']} fontWeight={'bold'}>&</Text>
+                          <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'}>Ibu Katimah</Text>
+                        </Stack>
+                      </Fade>
                     </Box>
                   </GridItem>
                   </Grid>
                 </HStack>
               </VStack>
             </HStack>
+            <Box height={10}>
+              <Wave mask="url(#mask)" fill="#d99452">
+                <defs>
+                  <linearGradient id="gradient" gradientTransform="rotate(90)">
+                    <stop offset="0" stopColor="white" />
+                    <stop offset="0.5" stopColor="black" />
+                  </linearGradient>
+                  <mask id="mask">
+                    <rect x="0" y="0" width="100%" height="75%" fill="url(#gradient)"  />
+                  </mask>
+                </defs>
+              </Wave>
+            </Box>
           </Box>
 
           {/* Section 3 */}
           <Box
              style={{
-              // backgroundImage: `url(${Background})`,
-              // backgroundPosition: 'center',
-              // backgroundSize: 'cover',
-              // backgroundRepeat: 'no-repeat',
-              background: 'black',
+              backgroundImage: `url(${Background})`,
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
               width: '100vw',
               height: 'auto'
             }}
           >
             <HStack justify={'center'} fontWeight={'bold'}>
-              <VStack height={['auto', '100vh']} width={'90%'} justify={'center'} fontWeight={'bold'} textAlign={'center'} pt={12} pb={8}>
+              <VStack height={['auto']} width={'90%'} justify={'center'} fontWeight={'bold'} textAlign={'center'} pt={12} pb={8}>
                 <Box textAlign={'center'}>
-                  <Text fontSize={['lg', '2xl']}>Insyaallah Acara Akan Dilaksanan Pada : </Text>
-                  <Text fontSize={['3xl', '4xl']} className='font-great' mt={10}>Akad Nikah</Text>
+                  <Text fontSize={['lg', '2xl']}>Insyaallah acara akan dilaksanan pada : </Text>
+                  <Flip top>
+                    <Text fontSize={['3xl', '4xl']} className='font-great' mt={10}>Akad Nikah</Text>
+                  </Flip>
                   <HStack justify={'center'} mt={4}>
                     <Box gap={16}>
                       <HStack align={'center'} mb={2}>
@@ -429,7 +491,9 @@ const Index = () => {
                   </Box>
                 </Box>
                 <Box mt={12}>
-                  <Text fontSize={['3xl', '4xl']} className='font-great'>Resepsi</Text>
+                  <Flip top>
+                    <Text fontSize={['3xl', '4xl']} className='font-great'>Resepsi</Text>
+                  </Flip>
                   <HStack justify={'center'}>
                     <Box>
                       <HStack align={'center'} mb={2}>
@@ -438,7 +502,7 @@ const Index = () => {
                       </HStack>
                       <HStack align={'center'}>
                         <Image src={Clock} alt='calendar' />
-                        <Text fontSize={['md', 'lg']}>Pukul : 08:00 WIB - Selesai</Text>
+                        <Text fontSize={['md', 'lg']}>Pukul : 10:00 WIB - Selesai</Text>
                       </HStack>
                     </Box>
                   </HStack>
@@ -447,123 +511,151 @@ const Index = () => {
                     <Text fontWeight={'semibold'}>Jl. Kesatria, Asrama Kodim 0204/DS Kec. Padang Hilir (Barak Duku II ) - Tebing Tinggi</Text>
                   </Box>
                 </Box>
-
-                <Box my={2} width={'100%'}>
-                  <HStack justify={'center'}>
-                    <Box width={['100%', '505%', '35%']}>
-                      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d250.32691824289753!2d99.17310447498484!3d3.3322602496367257!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x303161e68c07ffeb%3A0x29e5274469712fcc!2sKedai%20kui%20tebing%20tinggi!5e0!3m2!1sen!2sid!4v1696303955563!5m2!1sen!2sid" width="100%" height="300" style={{border:0}} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
-                    </Box>
-                  </HStack>
-                  <Button
-                    mt={4}
-                    size={'sm'}
-                    color={'white'}
-                    background={'#d99452'}
-                    _hover={{ background: '#e7af7a' }}
-                    onClick={() => {
-                      window.open('https://maps.app.goo.gl/ajcYDCnPwFxecL9b9')
-                    }}
-                  >
-                    Lihat Lokasi
-                  </Button>
+                <Box mt={8} width={'100%'}>
+                  <LightSpeed left>
+                    <HStack justify={'center'}>
+                      <Box width={['100%', '505%', '60%', '40%']} border={'2px'} borderColor={'#d99452'}>
+                        <iframe title='lokasi acara' src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d250.32691824289753!2d99.17310447498484!3d3.3322602496367257!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x303161e68c07ffeb%3A0x29e5274469712fcc!2sKedai%20kui%20tebing%20tinggi!5e0!3m2!1sen!2sid!4v1696303955563!5m2!1sen!2sid" width="100%" height="300" style={{border:0}} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+                      </Box>
+                    </HStack>
+                    <Button
+                      mt={4}
+                      size={'sm'}
+                      color={'white'}
+                      background={'#d99452'}
+                      _hover={{ background: '#e7af7a' }}
+                      onClick={() => {
+                        window.open('https://maps.app.goo.gl/ajcYDCnPwFxecL9b9')
+                      }}
+                    >
+                      <Image src={Map} alt='map' />
+                      <Text ml={2}>Lihat Lokasi</Text>
+                    </Button>
+                  </LightSpeed>
                 </Box>
               </VStack>
             </HStack>
+            <Box height={10}>
+              <Wave mask="url(#mask)" fill="#d99452">
+                <defs>
+                  <linearGradient id="gradient" gradientTransform="rotate(90)">
+                    <stop offset="0" stopColor="white" />
+                    <stop offset="0.5" stopColor="black" />
+                  </linearGradient>
+                  <mask id="mask">
+                    <rect x="0" y="0" width="100%" height="75%" fill="url(#gradient)"  />
+                  </mask>
+                </defs>
+              </Wave>
+            </Box>
           </Box>
 
           {/* Section 4 */}
           <Box
             style={{
-              // backgroundImage: `url(${Background})`,
-              // backgroundPosition: 'center',
-              // backgroundSize: 'cover',
-              // backgroundRepeat: 'no-repeat',
-              background: 'black',
+              backgroundImage: `url(${Background})`,
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
               width: '100vw',
-              // height: '100vh'
             }}
-            height={['auto', '100vh']}
+            height={['auto']}
           >
             <HStack justify={'center'} fontWeight={'bold'}>
-              <VStack height={['auto', '100vh']} justify={'center'} pt={12} pb={8}>
+              <VStack height={['auto']} justify={'center'} pt={12} pb={8} px={4}>
+                <Flip top>
                   <Text textAlign={'center'} fontSize={['4xl', '5xl', '6xl']} fontWeight={'bold'} className='font-great'>Wedding Gift</Text>
-                  <Text fontSize={['md', 'lg', 'xl']} textAlign={'center'} width={['100%', '100%', '50%']} mt={8}>Doa Restu Anda merupakan karunia yang sangat berarti bagi kami. Dan jika memberi adalah ungkapan tanda kasih Anda, Anda dapat memberi kado secara cashless.</Text>
-                  <HStack justify={'center'} mt={8}>
-                    <Box align={'center'}>
-                      <Box position={'relative'} display={'block'} width={['50%', '25%', '15%']}>
-                        <Image src={BCA} alt='bni' style={{ objectFit: 'cover', width: '100%' }} />
-                      </Box>
-                      <Text fontSize={['sm', 'md', 'xl']} mt={4}>Transfer Ke Rekening BCA a.n</Text>
-                      <Text fontSize={['lg', 'xl']} fontWeight={'bold'} mt={2}>Muhammad Luthfi Sugara Nasution</Text>
-                      <Text fontSize={['md', 'lg']} fontWeight={'bold'} mt={1}>( 8205283044 )</Text>
-                      <Button
-                        mt={4}
-                        color={'white'}
-                        background={'#d99452'}
-                        fontWeight={'bold'}
-                        _hover={{ background: '#e7af7a' }}
-                        onClick={() => {
-                          createToast('Copied');
-                          copyText('8205283044')
-                        }}
-                      >
-                        <Image src={Copy} alt='copy' mr={2} />
-                        <Text ml={1}>Copy No Rekening</Text>
-                      </Button>
+                </Flip>
+                <Text fontSize={['md', 'lg', 'xl']} textAlign={'center'} width={['100%', '100%', '50%']} mt={8}>Tanpa mengurangi rasa hormat, jika ingin memberikan hadiah kepada kami dapat melalui : </Text>
+                <HStack justify={'center'} mt={8}>
+                  <Box align={'center'}>
+                    <Box position={'relative'} display={'block'} width={['30%', '20%', '15%', '10%']}>
+                      <Image src={BCA} alt='bni' style={{ objectFit: 'cover', width: '100%' }} />
                     </Box>
-                  </HStack>
-                  <HStack justify={'center'} mt={8}>
-                    <Box align={'center'}>
-                      <Box position={'relative'} display={'block'} width={['50%', '25%', '20%']}>
-                        <Image src={BNI} alt='bni' style={{ objectFit: 'cover', width: '100%' }} />
-                      </Box>
-                      <Text fontSize={['sm', 'md', 'xl']} mt={2}>Transfer Ke Rekening BNI a.n</Text>
-                      <Text fontSize={['lg', 'xl']} mt={2}>Endang Syuarda</Text>
-                      <Text fontSize={['md', 'lg']} mt={1} fontWeight={'bold'}>( 0380683810 )</Text>
-                      <Button
-                        mt={4}
-                        color={'white'}
-                        fontWeight={'bold'}
-                        background={'#d99452'}
-                        _hover={{ background: '#e7af7a' }}
-                        onClick={() => {
-                          createToast('Copied');
-                          copyText('0380683810')
-                        }}
-                      >
-                        <Image src={Copy} alt='copy' mr={2} />
-                        <Text ml={1}>Copy No Rekening</Text>
-                      </Button>
+                    <Text fontSize={['sm', 'md', 'xl']} mt={4}>Transfer Ke Rekening BCA a/n</Text>
+                    <Text fontSize={['lg', 'xl']} fontWeight={'bold'} mt={2}>Muhammad Luthfi Sugara Nasution</Text>
+                    <Text fontSize={['md', 'lg']} fontWeight={'bold'} mt={1}>( 8205283044 )</Text>
+                    <Button
+                      mt={4}
+                      size={['sm']}
+                      color={'white'}
+                      background={'#d99452'}
+                      fontWeight={'bold'}
+                      _hover={{ background: '#e7af7a' }}
+                      onClick={() => {
+                        createToast('Copied', 'success');
+                        copyText('8205283044')
+                      }}
+                    >
+                      <Image src={Copy} alt='copy' />
+                      <Text ml={2}>Copy No Rekening</Text>
+                    </Button>
+                  </Box>
+                </HStack>
+                <HStack justify={'center'} mt={8}>
+                  <Box align={'center'}>
+                    <Box position={'relative'} display={'block'} width={['30%', '20%', '15%', '12%', '15%']}>
+                      <Image src={BNI} alt='bni' style={{ objectFit: 'cover', width: '100%' }} />
                     </Box>
-                  </HStack>
+                    <Text fontSize={['sm', 'md', 'xl']} mt={4}>Transfer Ke Rekening BNI a/n</Text>
+                    <Text fontSize={['lg', 'xl']} mt={2}>Endang Syuarda</Text>
+                    <Text fontSize={['md', 'lg']} mt={1} fontWeight={'bold'}>( 0380683810 )</Text>
+                    <Button
+                      mt={4}
+                      size={['sm']}
+                      color={'white'}
+                      fontWeight={'bold'}
+                      background={'#d99452'}
+                      _hover={{ background: '#e7af7a' }}
+                      onClick={() => {
+                        createToast('Copied', 'success');
+                        copyText('0380683810')
+                      }}
+                    >
+                      <Image src={Copy} alt='copy' />
+                      <Text ml={2}>Copy No Rekening</Text>
+                    </Button>
+                  </Box>
+                </HStack>
               </VStack>
             </HStack>
+            <Box height={10}>
+              <Wave mask="url(#mask)" fill="#d99452">
+                <defs>
+                  <linearGradient id="gradient" gradientTransform="rotate(90)">
+                    <stop offset="0" stopColor="white" />
+                    <stop offset="0.5" stopColor="black" />
+                  </linearGradient>
+                  <mask id="mask">
+                    <rect x="0" y="0" width="100%" height="75%" fill="url(#gradient)"  />
+                  </mask>
+                </defs>
+              </Wave>
+            </Box>
           </Box>
 
           {/* Section 5 */}
           <Box
             style={{
-              // backgroundImage: `url(${Background})`,
-              // backgroundPosition: 'center',
-              // backgroundSize: 'cover',
-              // backgroundRepeat: 'no-repeat',
-              background: 'black',
+              backgroundImage: `url(${Background})`,
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
               width: '100vw',
-              height: '100vh'
+              height: 'auto'
             }}
           >
             <HStack justify={'center'}>
-              <VStack height={'100vh'} width={['950%', '850%', '75%', '60%', '50%']} justify={'center'} textAlign={'center'} color={'black'}>
-                  <Text fontSize={['xl', '2xl']} fontWeight={'bold'} mb={4} color={'white'}>Kirim Pesan Untuk Kedua Mempelai</Text>
+              <VStack height={'auto'} width={['950%', '850%', '75%', '60%', '50%']} justify={'center'} textAlign={'center'}  pt={12} pb={8} px={4}>
+                  <Text fontSize={['xl', '2xl']} fontWeight={'bold'} my={4}>Kirim pesan untuk kedua mempelai</Text>
                   <Box width={'95%'} bg={'#f3eeea'} p={4} rounded={'lg'}>
                     <Box mb={4}>
-                      <Text textAlign={'start'} fontWeight={'semibold'}>Nama <span style={{color: 'red'}}>*</span></Text>
+                      <Text fontSize={['sm']} textAlign={'start'} fontWeight={'semibold'}>Nama <span style={{color: 'red'}}>*</span></Text>
                       <Input 
                         name='title' 
                         value={values.name}
                         background={'white'}
                         onChange={(e) => {
-                          // console.log('title : ', e.target.value)
                           setFieldValue('name', e.target.value);
                         }}
                       />
@@ -574,7 +666,7 @@ const Index = () => {
                       )}
                     </Box>
                     <Box mb={4}>
-                      <Text textAlign={'start'} fontWeight={'semibold'} mb={1}>Ucapan & doa untuk kedua mempelai <span style={{color: 'red'}}>*</span></Text>
+                      <Text fontSize={['sm']} textAlign={'start'} fontWeight={'semibold'} mb={1}>Ucapan & doa untuk kedua mempelai <span style={{color: 'red'}}>*</span></Text>
                       <Textarea 
                         name='description' 
                         background={'white'}
@@ -594,6 +686,7 @@ const Index = () => {
                         color={'white'}
                         align={'end'}
                         width={'full'}
+                        size={['sm']}
                         background={'#d99452'}
                         _hover={{ background: '#e7af7a' }}
                         isLoading={loadAction}
@@ -607,12 +700,12 @@ const Index = () => {
                   </Box>
 
                   <Box width={'95%'} height={400} overflowY={'scroll'} bg={'#f3eeea'} p={2} mt={10} rounded={'lg'}>
-                    <Text casing={'uppercase'} mx={6} my={4} textAlign={'start'} fontSize={'lg'} fontWeight={'bold'}>Ucapan & doa dari para undangan</Text>
+                    <Text casing={'uppercase'} mx={6} my={4} textAlign={'start'} fontSize={['md']} fontWeight={'bold'}>Ucapan & doa dari para undangan</Text>
                     {data &&
                     data.pages.map((page, indexPage) => (
                       <Box key={indexPage}>
-                        {page.data.map((message, indexBundle) => (
-                          <Box m={6}>
+                        {page.data.map((message, index) => (
+                          <Box m={[2]} key={index}>
                            <Box className='arrow-up' ml={4}></Box>
                             <Box 
                               p={4}
@@ -624,12 +717,12 @@ const Index = () => {
                               textAlign={'start'}
                             >
                               <HStack justify={'space-between'}>
-                                <Text color={'#d99452'} fontWeight={'bold'} mb={1} fontSize={'sm'}>{message.name}</Text>
+                                <Text color={'#d99452'} fontWeight={'bold'} mb={1} fontSize={['xs', 'sm', 'md']}>{message.name}</Text>
                                 <Text 
                                   color={'#d99452'} 
                                   fontWeight={'bold'}
                                   mb={1} 
-                                  fontSize={'xs'}
+                                  fontSize={['10px', 'sm']}
                                 >
                                   {formatDistanceToNow(
                                     new Date(message.created_at),
@@ -641,7 +734,7 @@ const Index = () => {
                                   )}
                                 </Text>
                               </HStack>
-                              <Text fontWeight={'bold'} fontSize={['sm', 'md']}>{message.description}</Text>
+                              <Text fontWeight={'bold'} fontSize={['sm', 'md', 'lg']}>{message.description}</Text>
                             </Box>
                           </Box>
                       ))}
@@ -661,29 +754,47 @@ const Index = () => {
                   </Box>
               </VStack>
             </HStack>
+            <Box height={10}>
+              <Wave mask="url(#mask)" fill="#d99452">
+                <defs>
+                  <linearGradient id="gradient" gradientTransform="rotate(90)">
+                    <stop offset="0" stopColor="white" />
+                    <stop offset="0.5" stopColor="black" />
+                  </linearGradient>
+                  <mask id="mask">
+                    <rect x="0" y="0" width="100%" height="75%" fill="url(#gradient)"  />
+                  </mask>
+                </defs>
+              </Wave>
+            </Box>
           </Box>
 
           {/* Section 6 */}
           <Box
-            bg={'black'}
-            p={4}
+            style={{
+              backgroundImage: `url(${Background})`,
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
+              // background: 'black',
+              width: '100vw',
+              height: 'auto'
+            }}
           >
             <HStack justify={'center'}>
               <Box width={'95%'}>
-                <Text fontWeight={'bold'} fontSize={['md', 'lg', 'xl']} textAlign={'center'} width={['95%', '95', '50%']} mx={'auto'}>Tiada Yang Dapat Kami Ungkapkan Selain Rasa Terimakasih Dari Hati Yang Tulus Apabila Bapak/ Ibu/ Saudara/i Berkenan Hadir Untuk Memberikan Do’a Restu Kepada Kami</Text>
+                <Text fontWeight={'bold'} fontSize={['md', 'lg', 'xl']} textAlign={'center'} width={['95%', '95', '50%']} mx={'auto'} mt={12}>Tiada yang dapat kami ungkapkan selain rasa terimakasih dari hati yang tulus apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan Do’a restu kepada kami</Text>
                 <HStack justify={'center'} my={8}>
-                  <Box width={['75%', '60%', '30%']} position={'relative'} display={'block'} >
+                  <Box width={['55%', '60%', '30%']} position={'relative'} display={'block'} >
                     <Image src={Scooter} objectFit={'cover'} width={'100%'} />
                   </Box>
                 </HStack>
-                <Stack direction={['column', 'row']} justify={'center'} textAlign={'center'} fontWeight={'bold'} fontSize={['sm', 'lg']}>
-                  <Text>Luthfi & Endang</Text>
-                  <Text>18 November 2023</Text>
-                </Stack>
               </Box>
             </HStack>
+            <Stack p={4} direction={['column', 'row']} justify={'center'} textAlign={'center'} fontWeight={'bold'} fontSize={['sm', 'lg']} borderTop={'1px'} borderColor={'#8a613a'}>
+              <Text>Copyright © 2023. Luthfi & Endang</Text>
+            </Stack>
           </Box>
-
         </Box>
       )}
     </Box>

@@ -3,18 +3,19 @@
 import React from 'react'
 import { CloseIcon } from '@chakra-ui/icons'
 import { Box, Flex, Icon, Image, Stack, Text, useToast } from '@chakra-ui/react'
-import { CheckSuccess } from '../../assets/icons'
+import { CheckSuccess, Close } from '../../assets/icons'
 
 const Index = () => {
     const toast = useToast()
 
     const createToast = (
         title,
+        status,
     ) => {
         toast({
             title: title,
             description: '',
-            status: 'success',
+            status: status,
             duration: 9000,
             isClosable: true,
             position: 'top-right',
@@ -24,7 +25,7 @@ const Index = () => {
                         <Flex align={'center'} gap={4}>
                             <Box width={10} height={10} position={'relative'} display={'block'}>
                                 <Image
-                                    src={CheckSuccess}
+                                    src={status == 'success' ? CheckSuccess : Close}
                                     alt='toast'
                                     width={10}
                                     height={10}
