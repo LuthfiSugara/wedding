@@ -10,14 +10,6 @@ function App() {
 
   return (
     <Box
-      // style={{
-      //   backgroundImage: `url(${Background})`,
-      //   backgroundPosition: 'center',
-      //   backgroundSize: 'cover',
-      //   // backgroundRepeat: 'no-repeat',
-      //   width: '100vw',
-      //   height: '100vh'
-      // }}
       Background={'black'}
     >
       <QueryClientProvider client={queryClient}>

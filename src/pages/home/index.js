@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { BCA, BNI, Background, Man, Scooter, WeddingCouple, Woman } from '../../assets';
 import { Box, Button,  Grid, GridItem, HStack, Image, Input, SimpleGrid, Spinner, Stack, Text, Textarea, VStack } from '@chakra-ui/react';
 import { Calendar, Clock, Clock2, Copy, Envelope, Map, Pause, Play } from '../../assets/icons';
@@ -19,7 +19,8 @@ import LightSpeed from 'react-reveal/LightSpeed';
 import Wave from 'react-wavify';
 
 const Index = () => {
-    const location = useLocation();
+    const { name } = useParams();
+    
     const LIMIT = 3;
     const { createToast } = Toast();
     const { ref, inView } = useInView();
@@ -33,7 +34,7 @@ const Index = () => {
     [guestName, setGuestName] = useState('Nama Tamu Undangan');
 
     useEffect(() => {
-      const name = location.pathname.replace("/", "")
+      // const name = location.pathname.replace("/", "")
       if(name){
         setGuestName(name);
       }
@@ -203,7 +204,7 @@ const Index = () => {
                 </Fade>
               </Stack>
               <Text fontSize={['md', 'md']} fontWeight={'semibold'} mt={4} textAlign={'center'}>Kpd Bpk/Ibu/Saudara/i</Text>
-              <Text fontSize={['2xl', '2xl']} fontWeight={'bold'} my={2} casing={'capitalize'} textAlign={'center'}>{guestName.split("%20").join(" ")}</Text>
+              <Text fontSize={['2xl', '2xl']} fontWeight={'bold'} my={2} casing={'capitalize'} textAlign={'center'}>{guestName}</Text>
               <Text 
                 mt={2} 
                 fontWeight={'semibold'} 
