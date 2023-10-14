@@ -338,7 +338,7 @@ const Index = () => {
                 background={'#d99452'}
                 _hover={{ background: '#e7af7a' }}
                 onClick={() => {
-                  window.open("https://calendar.google.com/calendar/event?action=TEMPLATE&tmeid=MGI3NWMwcTZjbzZudGs5NmhrbzUwYWdvZ2sgc3VnYXJhbHV0aGZpQG0&tmsrc=sugaraluthfi%40gmail.com");
+                  window.open("https://calendar.google.com/calendar/u/0/r/eventedit?text=Pernikahan+Luthfi+dan+Endang&dates=20231118T010000Z/20231118T150000Z&ctz=Asia/Jakarta");
                 }}
               >
                 <Image src={Clock2} /> 
@@ -368,8 +368,8 @@ const Index = () => {
               backgroundSize: 'cover',
               backgroundRepeat: 'no-repeat',
               width: '100vw',
+              height: 'auto'
             }}
-            height={['auto']}
           >
             <HStack justify={'center'} px={[2]} pt={[12]} pb={8}>
               <VStack height={['auto', 'auto',]} width={'97%'} justify={'center'} align={'center'}>
@@ -403,19 +403,23 @@ const Index = () => {
                         </Box>
                       </HStack>
                       <Fade bottom>
-                        <Text fontSize={['xl', '2xl', '3xl', '4xl']} fontWeight={'bold'} className='font-great'>Muhammad Luthfi Sugara NST. S.Kom</Text>
+                        <Text fontSize={['3xl', '4xl', '3xl', '4xl']} fontWeight={'bold'} className='font-great'>Muhammad Luthfi Sugara NST. S.Kom</Text>
                         <Text fontSize={['md', 'lg']} fontWeight={'bold'} mt={4}>Anak Dari : </Text>
-                        <Stack direction={['column']}>
+                        <Stack direction={['column']} gap={0}>
                           <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'}>Bapak H. Zul elmi Nasution</Text>
                           <Text fontSize={['xl', 'xl']} fontWeight={'bold'}>&</Text>
-                          <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'}>Ibu Hj. Derhinun Harahap S.Pd.I</Text>
+                          <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'} mt={-1}>Ibu Hj. Derhinun Harahap S.Pd.I</Text>
                         </Stack>
                       </Fade>
                     </Box>
                   </GridItem>
                   <GridItem w='100%' colSpan={[11, 11, 1]} align={'center'}>
                     <VStack justify={'center'} height={['', 'full']}>
-                      <Text fontSize={'4xl'} fontWeight={'bold'} className='font-great'>&</Text>
+                      <HStack width={'50%'}>
+                        <Box border={'1px'} borderColor={'#8a613a'} width={'50%'}></Box>
+                        <Text fontSize={['2xl', '4xl']} fontWeight={'bold'} className='font-great'>&</Text>
+                        <Box border={'1px'} borderColor={'#8a613a'} width={'50%'}></Box>
+                      </HStack>
                     </VStack>
                   </GridItem>
                   <GridItem w='100%' colSpan={[11, 11, 5]} align={'center'}>
@@ -426,12 +430,12 @@ const Index = () => {
                         </Box>
                       </HStack>
                       <Fade bottom>
-                        <Text fontSize={['xl', '2xl', '3xl', '4xl']} fontWeight={'bold'} className='font-great'>Endang Syuarda. A.Md</Text>
+                        <Text fontSize={['3xl', '4xl', '3xl', '4xl']} fontWeight={'bold'} className='font-great'>Endang Syuarda. A.Md</Text>
                         <Text fontSize={['md', 'lg']} fontWeight={'bold'} mt={4}>Anak Dari : </Text>
-                        <Stack direction={['column']}>
+                        <Stack direction={['column']} gap={0}>
                           <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'}>Bapak Purn TNI AD Enjam (Alm)</Text>
                           <Text fontSize={['xl', 'xl']} fontWeight={'bold'}>&</Text>
-                          <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'}>Ibu Katimah</Text>
+                          <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'} mt={-1}>Ibu Katimah</Text>
                         </Stack>
                       </Fade>
                     </Box>
@@ -783,7 +787,14 @@ const Index = () => {
           >
             <HStack justify={'center'}>
               <Box width={'95%'}>
-                <Text fontWeight={'bold'} fontSize={['md', 'lg', 'xl']} textAlign={'center'} width={['95%', '95', '50%']} mx={'auto'} mt={12}>Tiada yang dapat kami ungkapkan selain rasa terimakasih dari hati yang tulus apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan Do’a restu kepada kami</Text>
+                <Text fontWeight={'bold'} fontSize={['md', 'lg', '2xl']} textAlign={'center'} width={['95%', '95', '50%']} mx={'auto'} mt={12}>QS Ar Rum Ayat 21</Text>
+                <Text fontWeight={'bold'} fontSize={['md', 'lg', 'xl']} textAlign={'center'} width={['95%', '95', '50%']} mx={'auto'} mt={4}>
+                وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُمْ مِنْ أَنْفُسِكُمْ أَزْوَاجًا لِتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُمْ مَوَدَّةً وَرَحْمَةً إِنَّ فِي ذَلِكَ لَآيَاتٍ لِقَوْمٍ يَتَفَكَّرُونَ
+                </Text>
+                <Text fontWeight={'bold'} fontSize={['md', 'lg', 'xl']} textAlign={'center'} width={['95%', '95', '50%']} mx={'auto'} mt={12}>
+                "Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang. Sesungguhnya pada yang demikian itu benar-benar terdapat tanda-tanda (kebesaran Allah) bagi kaum yang berpikir.”
+                </Text>
+                {/* <Text fontWeight={'bold'} fontSize={['md', 'lg', 'xl']} textAlign={'center'} width={['95%', '95', '50%']} mx={'auto'} mt={12}>Tiada yang dapat kami ungkapkan selain rasa terimakasih dari hati yang tulus apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan Do’a restu kepada kami</Text> */}
                 <HStack justify={'center'} my={8}>
                   <Box width={['55%', '60%', '30%']} position={'relative'} display={'block'} >
                     <Image src={Scooter} objectFit={'cover'} width={'100%'} />
