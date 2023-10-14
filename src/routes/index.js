@@ -6,8 +6,9 @@ const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/:param" element={<Home />} />
+        <Route path="/" element={<Home />}> 
+          <Route path="/:param" element={<Home />} />
+        </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
