@@ -7,7 +7,7 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         <Route exact path="/" element={<Home />} />
-        <Route exact path="/tamu/:name" element={<Home />} />
+        <Route exact path="/:name" element={<Home />} />
         <Route exact path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
