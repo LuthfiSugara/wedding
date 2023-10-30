@@ -34,9 +34,17 @@ const Index = () => {
     [guestName, setGuestName] = useState('Nama Tamu Undangan');
 
     useEffect(() => {
-      // const name = location.pathname.replace("/", "")
       if(name){
-        setGuestName(name);
+        let arrName = name.split('+');
+        let tmpGuestName = '';
+        arrName.map((word) => {
+          if(word == 'dan' || word == 'Dan'){
+            tmpGuestName += word.charAt(0).toLowerCase() + word.slice(1) + ' ';
+          }else{
+            tmpGuestName += word.charAt(0).toUpperCase() + word.slice(1) + ' ';
+          }
+        })
+        setGuestName(tmpGuestName);
       }
     }, []);
 
@@ -174,24 +182,6 @@ const Index = () => {
                 direction={{lg: 'row'}}
                 fontSize={['4xl', '5xl']} 
               >
-                <Fade left>
-                  <Text 
-                    mt={4}
-                    fontWeight={'bold'}
-                    textAlign={'center'}
-                    className='font-great'
-                  >
-                    Luthfi
-                  </Text>
-                </Fade>
-                <Text 
-                  mt={4}
-                  fontWeight={'bold'}
-                  textAlign={'center'}
-                  className='font-great'
-                >
-                  &
-                </Text>
                 <Fade right>
                   <Text 
                     mt={4}
@@ -202,9 +192,27 @@ const Index = () => {
                     Endang
                   </Text>
                 </Fade>
+                <Text 
+                  mt={4}
+                  fontWeight={'bold'}
+                  textAlign={'center'}
+                  className='font-great'
+                >
+                  &
+                </Text>
+                <Fade left>
+                  <Text 
+                    mt={4}
+                    fontWeight={'bold'}
+                    textAlign={'center'}
+                    className='font-great'
+                  >
+                    Luthfi
+                  </Text>
+                </Fade>
               </Stack>
               <Text fontSize={['md', 'md']} fontWeight={'semibold'} mt={4} textAlign={'center'}>Kpd Bpk/Ibu/Saudara/i</Text>
-              <Text fontSize={['2xl', '2xl']} fontWeight={'bold'} my={2} casing={'capitalize'} textAlign={'center'}>{guestName}</Text>
+              <Text fontSize={['2xl', '2xl']} fontWeight={'bold'} my={2} textAlign={'center'}>{guestName}</Text>
               <Text 
                 mt={2} 
                 fontWeight={'semibold'} 
@@ -288,12 +296,12 @@ const Index = () => {
                 <Image src={WeddingCouple} width={'100%'} objectFit={'cover'} />
               </Box>
               <Stack gap={[4]} textAlign={'center'} direction={{sm: 'col', lg: 'row'}} align={'center'}>
-                <Fade left>
-                  <Text fontSize={['4xl', '5xl', '6xl']} fontWeight={'bold'} className='font-great'>Luthfi</Text>
-                </Fade>
-                <Text fontSize={['3xl', '4xl', '5xl']} fontWeight={'bold'} className='font-great'>&</Text>
                 <Fade right>
                   <Text fontSize={['4xl', '5xl', '6xl']} fontWeight={'bold'} className='font-great'>Endang</Text>
+                </Fade>
+                <Text fontSize={['3xl', '4xl', '5xl']} fontWeight={'bold'} className='font-great'>&</Text>
+                <Fade left>
+                  <Text fontSize={['4xl', '5xl', '6xl']} fontWeight={'bold'} className='font-great'>Luthfi</Text>
                 </Fade>
               </Stack>
               <Box textAlign={'center'} fontWeight={'bold'} mt={[4, 0]}>
@@ -390,57 +398,57 @@ const Index = () => {
                   </Text>
                 </Zoom>
                 <HStack justify={'center'}>
-                <Grid 
-                  templateRows={['repeat(1, 1fr)', 'repeat(1, 1fr)']}
-                  templateColumns={['repeat(11, 1fr)', 'repeat(11, 1fr)']}
-                  gap={6}
-                  mx={'auto'}
-                >
-                  <GridItem w='100%' colSpan={[11, 11, 5]} align={'center'}>
-                    <Box textAlign={'center'}>
-                      <HStack justify={'center'} mb={6}>
-                        <Box width={['25%']} position={'relative'} display={'block'}>
-                          <Image src={Man} objectFit={'cover'} width={'100%'} />
-                        </Box>
-                      </HStack>
-                      <Fade bottom>
-                        <Text fontSize={['3xl', '4xl', '3xl', '4xl']} fontWeight={'bold'} className='font-great'>Muhammad Luthfi Sugara NST. S.Kom</Text>
-                        <Text fontSize={['md', 'lg']} fontWeight={'bold'} mt={4}>Anak Dari : </Text>
-                        <Stack direction={['column']} gap={0}>
-                          <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'}>Bapak H. Zul elmi Nasution</Text>
-                          <Text fontSize={['xl', 'xl']} fontWeight={'bold'}>&</Text>
-                          <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'} mt={-1}>Ibu Hj. Derhinun Harahap S.Pd.I</Text>
-                        </Stack>
-                      </Fade>
-                    </Box>
-                  </GridItem>
-                  <GridItem w='100%' colSpan={[11, 11, 1]} align={'center'}>
-                    <VStack justify={'center'} height={['', 'full']}>
-                      <HStack width={'50%'}>
-                        <Box border={'1px'} borderColor={'#8a613a'} width={'50%'}></Box>
-                        <Text fontSize={['2xl', '4xl']} fontWeight={'bold'} className='font-great'>&</Text>
-                        <Box border={'1px'} borderColor={'#8a613a'} width={'50%'}></Box>
-                      </HStack>
-                    </VStack>
-                  </GridItem>
-                  <GridItem w='100%' colSpan={[11, 11, 5]} align={'center'}>
-                    <Box textAlign={'center'}>
-                      <HStack justify={'center'} mb={10}>
-                        <Box width={'25%'} position={'relative'} display={'block'}>
-                          <Image src={Woman} objectFit={'cover'} width={'100%'} />
-                        </Box>
-                      </HStack>
-                      <Fade bottom>
-                        <Text fontSize={['3xl', '4xl', '3xl', '4xl']} fontWeight={'bold'} className='font-great'>Endang Syuarda. A.Md</Text>
-                        <Text fontSize={['md', 'lg']} fontWeight={'bold'} mt={4}>Anak Dari : </Text>
-                        <Stack direction={['column']} gap={0}>
-                          <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'}>Bapak Purn TNI AD Enjam (Alm)</Text>
-                          <Text fontSize={['xl', 'xl']} fontWeight={'bold'}>&</Text>
-                          <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'} mt={-1}>Ibu Katimah</Text>
-                        </Stack>
-                      </Fade>
-                    </Box>
-                  </GridItem>
+                  <Grid 
+                    templateRows={['repeat(1, 1fr)', 'repeat(1, 1fr)']}
+                    templateColumns={['repeat(11, 1fr)', 'repeat(11, 1fr)']}
+                    gap={6}
+                    mx={'auto'}
+                  >
+                    <GridItem w='100%' colSpan={[11, 11, 5]} align={'center'}>
+                      <Box textAlign={'center'}>
+                        <HStack justify={'center'} mb={10}>
+                          <Box width={'50%'} position={'relative'} display={'block'}>
+                            <Image src={Woman} objectFit={'cover'} width={'100%'} />
+                          </Box>
+                        </HStack>
+                        <Fade bottom>
+                          <Text fontSize={['3xl', '4xl', '3xl', '4xl']} fontWeight={'bold'} className='font-great'>Endang Syuarda. A.Md</Text>
+                          {/* <Text fontSize={['md', 'lg']} fontWeight={'bold'} mt={4}>Anak Dari : </Text> */}
+                          <Stack direction={['column']} gap={0}>
+                            <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'}>Putri dari Bapak Purn TNI AD Enjam (Alm) dan</Text>
+                            {/* <Text fontSize={['xl', 'xl']} fontWeight={'bold'}>dan</Text> */}
+                            <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'} mt={-1}>Ibu Katimah</Text>
+                          </Stack>
+                        </Fade>
+                      </Box>
+                    </GridItem>
+                    <GridItem w='100%' colSpan={[11, 11, 1]} align={'center'}>
+                      <VStack justify={'center'} height={['', 'full']}>
+                        <HStack width={'50%'}>
+                          <Box border={'1px'} borderColor={'#8a613a'} width={'50%'}></Box>
+                          <Text fontSize={['2xl', '4xl']} fontWeight={'bold'} className='font-great'>&</Text>
+                          <Box border={'1px'} borderColor={'#8a613a'} width={'50%'}></Box>
+                        </HStack>
+                      </VStack>
+                    </GridItem>
+                    <GridItem w='100%' colSpan={[11, 11, 5]} align={'center'}>
+                      <Box textAlign={'center'}>
+                        <HStack justify={'center'} mb={6}>
+                          <Box width={['50%']} position={'relative'} display={'block'}>
+                            <Image src={Man} objectFit={'cover'} width={'100%'} />
+                          </Box>
+                        </HStack>
+                        <Fade bottom>
+                          <Text fontSize={['3xl', '4xl', '3xl', '4xl']} fontWeight={'bold'} className='font-great'>Muhammad Luthfi Sugara NST. S.Kom</Text>
+                          {/* <Text fontSize={['md', 'lg']} fontWeight={'bold'} mt={4}>Anak Dari : </Text> */}
+                          <Stack direction={['column']} gap={0}>
+                            <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'}>Putra dari Bapak H. Zul elmi Nasution dan </Text>
+                            {/* <Text fontSize={['xl', 'xl']} fontWeight={'bold'}>dan</Text> */}
+                            <Text fontSize={['lg', 'xl', 'xl', '2xl']} fontWeight={'bold'} mt={-1}>Ibu Hj. Derhinun Harahap S.Pd.I</Text>
+                          </Stack>
+                        </Fade>
+                      </Box>
+                    </GridItem>
                   </Grid>
                 </HStack>
               </VStack>
@@ -492,7 +500,7 @@ const Index = () => {
                   </HStack>
                   <Box mt={4} fontSize={['sm', 'md']} fontWeight={'bold'}>
                     <Text>Bertempat Di Masjid Al-Falah</Text>
-                    <Text>Jl. Kesatria, Asrama Kodim 0204/DS Kec. Padang Hilir (Barak Duku II ) - Tebing Tinggi</Text>
+                    <Text>Jl. Kesatria, Asrama Kodim 0204/DS Kec. Padang Hilir (Barak Duku II ) - Tebing Tinggi, Sumatera Utara</Text>
                   </Box>
                 </Box>
                 <Box mt={12}>
@@ -513,7 +521,7 @@ const Index = () => {
                   </HStack>
                   <Box mt={4} fontSize={['sm', 'md']} fontWeight={'bold'}>
                     <Text>Bertempat Di Kediaman Mempelai Wanita</Text>
-                    <Text fontWeight={'semibold'}>Jl. Kesatria, Asrama Kodim 0204/DS Kec. Padang Hilir (Barak Duku II ) - Tebing Tinggi</Text>
+                    <Text fontWeight={'semibold'}>Jl. Kesatria, Asrama Kodim 0204/DS Kec. Padang Hilir (Barak Duku II ) - Tebing Tinggi, Sumatera Utara</Text>
                   </Box>
                 </Box>
                 <Box mt={8} width={'100%'}>
