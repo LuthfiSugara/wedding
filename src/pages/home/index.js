@@ -169,7 +169,7 @@ const Index = () => {
         color={'#8a613a'}
     >
       {step === 0 ? (          
-          <HStack justify={'center'}  width={['95%']} height={'100vh'} mx={'auto'} pt={{sm: 4, lg: 0 }} pb={{ sm: 8, lg: 0 }}>
+          <HStack justify={'center'}  width={['95%']} height={'auto  '} mx={'auto'} pt={{sm: 4, lg: 0 }} pb={{ sm: 8, lg: 0 }}>
             <VStack justify={'center'} width={'full'} height={['auto', 'auto', '100vh']} zIndex={5}>
               <Text fontWeight={'bold'} fontSize={['4xl', '4xl', '5xl']} mt={4} textAlign={'center'} className='font-great' casing={'capitalize'}>Undangan Pernikahan</Text>
               <HStack justify={'center'}>
@@ -500,7 +500,7 @@ const Index = () => {
                   </HStack>
                   <Box mt={4} fontSize={['sm', 'md']} fontWeight={'bold'}>
                     <Text>Bertempat Di Masjid Al-Falah</Text>
-                    <Text>Jl. Kesatria, Asrama Kodim 0204/DS Kec. Padang Hilir (Barak Duku II ) - Tebing Tinggi, Sumatera Utara</Text>
+                    <Text>Jl. Kesatria, Asrama Kodim 0204/DS Kec. Padang Hilir - Tebing Tinggi, Sumatera Utara</Text>
                   </Box>
                 </Box>
                 <Box mt={12}>

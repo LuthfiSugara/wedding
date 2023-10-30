@@ -500,7 +500,7 @@ const Index = () => {
                   </HStack>
                   <Box mt={4} fontSize={['sm', 'md']} fontWeight={'bold'}>
                     <Text>Bertempat Di Masjid Al-Falah</Text>
-                    <Text>Jl. Kesatria, Asrama Kodim 0204/DS Kec. Padang Hilir (Barak Duku II ) - Tebing Tinggi, Sumatera Utara</Text>
+                    <Text>Jl. Kesatria, Asrama Kodim 0204/DS Kec. Padang Hilir - Tebing Tinggi, Sumatera Utara</Text>
                   </Box>
                 </Box>
                 <Box mt={12}>
